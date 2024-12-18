@@ -44,26 +44,16 @@ export default function Navbar({ className }: NavbarProps) {
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="flex items-center justify-between">
-              <div className="ml-10 flex items-center space-x-12">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="text-sm md:px-5 lg:px-10 tracking-wider text-[#000000] transition-colors hover:text-[#515151]"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-              <div>
-                <SignedIn>
-                  <UserButton showName />
-                </SignedIn>
-                <SignedOut>
-                  <SignInButton />
-                </SignedOut>
-              </div>
+            <div className="ml-10 flex items-center space-x-12">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-sm md:px-5 lg:px-10 tracking-wider text-[#000000] transition-colors hover:text-[#515151]"
+                >
+                  {item.name}
+                </Link>
+              ))}
             </div>
           </div>
 
