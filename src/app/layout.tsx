@@ -5,6 +5,7 @@ import {
   ClerkProvider,
 } from "@clerk/nextjs";
 import Navbar from "@/components/NavBar/Navbar";
+
 // import {
 //   ClerkProvider,
 //   SignInButton,

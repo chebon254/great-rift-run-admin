@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import Image from 'next/image';
 
 export default function AddProduct() {
     const [formData, setFormData] = useState({
@@ -265,8 +266,10 @@ export default function AddProduct() {
                                 <div className="mt-4 flex space-x-2">
                                     {formData.images.map((file, index) => (
                                         <div key={index} className="relative">
-                                            <img 
+                                            <Image 
                                                 src={URL.createObjectURL(file)} 
+                                                height={100}
+                                                width={100}
                                                 alt={`Preview ${index + 1}`} 
                                                 className="h-20 w-20 object-cover rounded-md"
                                             />

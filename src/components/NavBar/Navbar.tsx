@@ -6,6 +6,14 @@ import Link from "next/link";
 interface NavbarProps {
   className?: string;
 }
+// import {
+//   ClerkProvider,
+//   SignInButton,
+//   SignedIn,
+//   SignedOut,
+//   UserButton,
+// } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export default function Navbar({ className }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,23 +44,36 @@ export default function Navbar({ className }: NavbarProps) {
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-center space-x-12">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-sm md:px-5 lg:px-10 tracking-wider text-[#000000] transition-colors hover:text-[#515151]"
-                >
-                  {item.name}
-                </Link>
-              ))}
+            <div className="flex items-center justify-between">
+              <div className="ml-10 flex items-center space-x-12">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="text-sm md:px-5 lg:px-10 tracking-wider text-[#000000] transition-colors hover:text-[#515151]"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+              <div>
+                <SignedIn>
+                  <UserButton showName />
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton />
+                </SignedOut>
+              </div>
             </div>
           </div>
 
           {/* Mobile Navigation */}
           <div className="md:hidden">
             <div className="p-0">
-              <button onClick={() => setIsOpen(!isOpen)} className="text-[#000000]">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-[#000000]"
+              >
                 <Image
                   src={"/site-ui-assets/bx-menu-alt-right.svg"}
                   alt="Open menu"
