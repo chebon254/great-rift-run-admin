@@ -6,14 +6,8 @@ import Link from "next/link";
 interface NavbarProps {
   className?: string;
 }
-// import {
-//   ClerkProvider,
-//   SignInButton,
-//   SignedIn,
-//   SignedOut,
-//   UserButton,
-// } from "@clerk/nextjs";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+
+import { SignedIn, UserButton } from "@clerk/nextjs";
 
 export default function Navbar({ className }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +34,7 @@ export default function Navbar({ className }: NavbarProps) {
                 priority
               />
             </Link>
+
           </div>
 
           {/* Desktop Navigation */}
