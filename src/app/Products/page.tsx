@@ -119,10 +119,11 @@ export default function Products() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="h-12.5 w-15 rounded-md">
                     <Image
-                      src={product.imageURL1 || "/product/placeholder.webp"}
+                      src={product.imageURL1 || "/products/product_placeholder.png"}
                       width={60}
                       height={50}
                       alt={product.name}
+                      className="rounded-md"
                     />
                   </div>
                   <p className="text-body-sm font-medium text-dark">
