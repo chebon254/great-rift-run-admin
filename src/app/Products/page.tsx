@@ -63,6 +63,7 @@ export default function Products() {
         </div>
       )}
 
+
       <div className="relative z-10 rounded-[10px] bg-white shadow-1 mb-4 px-4 py-4 md:px-6 2xl:px-7 flex flex-wrap items-center justify-between">
         <div className="flex flex-wrap items-center justify-start gap-2">
           {categories.map((category) => (
@@ -138,7 +139,7 @@ export default function Products() {
               </div>
               <div className="col-span-1 flex items-center">
                 <p className="text-body-sm font-medium text-dark">
-                  ${product.price}
+                  Ksh{product.price}
                 </p>
               </div>
               <div className="col-span-2 flex items-center">

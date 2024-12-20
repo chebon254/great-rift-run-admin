@@ -20,6 +20,9 @@ export async function saveImage(file: Buffer, originalFilename: string): Promise
   const filepath = path.join(uploadDir, filename);
   fs.writeFileSync(filepath, file);
   
-  // Return the public URL
-  return `/products/images/${filename}`;
+  // Get the base URL from environment variables
+  const baseUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://192.168.43.226:3000';
+  
+  // Return the full URL
+  return `${baseUrl}/products/images/${filename}`;
 }
