@@ -45,7 +45,7 @@ export default function Products() {
   };
 
   // Categories array for dynamic rendering
-  const categories = ["ALL", "TSHIRTS", "HOODIE", "CAPS", "WATER"];
+  const categories = ["ALL", "TSHIRTS", "HOODIES", "CAPS", "WATER"];
 
   return (
     <>
