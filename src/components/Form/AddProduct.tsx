@@ -3,8 +3,22 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Image from "next/image";
 
+// Define the form state interface
+interface ProductFormData {
+    category: string;
+    name: string;
+    description: string;
+    inStock: number;
+    price: number;
+    size: string;
+    color: string;
+    material: string;
+    images: string[];
+    imageFiles: File[];
+}
+
 export default function AddProduct() {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<ProductFormData>({
         category: "TSHIRTS",
         name: "",
         description: "",
@@ -13,7 +27,8 @@ export default function AddProduct() {
         size: "",
         color: "",
         material: "",
-        images: [] as string[],
+        images: [],
+        imageFiles: [],
     });
 
     const handleChange = (
@@ -35,13 +50,13 @@ export default function AddProduct() {
                 return;
             }
 
-            // Convert FileList to Array and process only the allowed number of files
             const filesArray = Array.from(files).slice(0, remainingSlots);
             const newImageUrls = filesArray.map(file => URL.createObjectURL(file));
-
+            
             setFormData((prev) => ({
                 ...prev,
                 images: [...prev.images, ...newImageUrls],
+                imageFiles: [...prev.imageFiles, ...filesArray],
             }));
         }
     };
@@ -50,27 +65,31 @@ export default function AddProduct() {
         setFormData((prev) => ({
             ...prev,
             images: prev.images.filter((_, index) => index !== indexToRemove),
+            imageFiles: prev.imageFiles.filter((_, index) => index !== indexToRemove),
         }));
     };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         
-        console.log('Sending data:', {
-            ...formData,
-            imageURLs: formData.images,
+        const formDataToSend = new FormData();
+        
+        // Add basic product data
+        Object.entries(formData).forEach(([key, value]) => {
+            if (key !== 'images' && key !== 'imageFiles') {
+                formDataToSend.append(key, String(value));
+            }
+        });
+        
+        // Add images
+        formData.imageFiles.forEach((file, index) => {
+            formDataToSend.append(`image${index}`, file);
         });
 
         try {
             const response = await fetch("/api/products", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    imageURLs: formData.images,
-                }),
+                body: formDataToSend,
             });
 
             const responseData = await response.json();
@@ -87,6 +106,7 @@ export default function AddProduct() {
                     color: "",
                     material: "",
                     images: [],
+                    imageFiles: [],
                 });
             } else {
                 alert(`Failed to add product: ${JSON.stringify(responseData, null, 2)}`);

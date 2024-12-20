@@ -1,64 +1,58 @@
-// src/app/api/products/route.ts
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { saveImage } from '../../../../utils/fileUpload';
 
 const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
     try {
-        const data = await request.json();
-        console.log('Received data:', JSON.stringify(data, null, 2));
+        const formData = await request.formData();
+        
+        // Extract basic product data
+        const productData = {
+            category: formData.get('category') as string,
+            name: formData.get('name') as string,
+            description: formData.get('description') as string,
+            price: parseFloat(formData.get('price') as string),
+            inStock: parseInt(formData.get('inStock') as string),
+            size: formData.get('size') as string,
+            color: formData.get('color') as string,
+            material: formData.get('material') as string,
+        };
 
-        // Detailed validation
+        // Validate required fields
         const missingFields = [];
-        if (!data.name) missingFields.push('name');
-        if (!data.category) missingFields.push('category');
-        if (!data.price && data.price !== 0) missingFields.push('price');
-        if (data.inStock === undefined) missingFields.push('inStock');
+        if (!productData.name) missingFields.push('name');
+        if (!productData.category) missingFields.push('category');
+        if (isNaN(productData.price)) missingFields.push('price');
+        if (isNaN(productData.inStock)) missingFields.push('inStock');
         
         if (missingFields.length > 0) {
-            console.log('Validation failed - missing fields:', missingFields);
             return NextResponse.json({
                 error: 'Missing required fields',
-                missingFields: missingFields,
-                receivedData: data
+                missingFields
             }, { status: 400 });
         }
 
-        // Type validation
-        if (typeof data.price !== 'number') {
-            console.log('Invalid price type:', typeof data.price);
-            return NextResponse.json({
-                error: 'Invalid price format',
-                received: data.price,
-                expectedType: 'number'
-            }, { status: 400 });
+        // Handle image uploads
+        const imageUrls = [];
+        for (let i = 0; i < 4; i++) {
+            const imageFile = formData.get(`image${i}`) as File | null;
+            if (imageFile) {
+                const buffer = Buffer.from(await imageFile.arrayBuffer());
+                const imageUrl = await saveImage(buffer, imageFile.name);
+                imageUrls.push(imageUrl);
+            }
         }
 
-        if (typeof data.inStock !== 'number') {
-            console.log('Invalid inStock type:', typeof data.inStock);
-            return NextResponse.json({
-                error: 'Invalid inStock format',
-                received: data.inStock,
-                expectedType: 'number'
-            }, { status: 400 });
-        }
-
-        // Save product to the database
+        // Save product to database
         const product = await prisma.product.create({
             data: {
-                category: data.category,
-                name: data.name,
-                description: data.description || '',
-                price: data.price,  // Already validated as number
-                inStock: data.inStock,  // Already validated as number
-                size: data.size || null,
-                color: data.color || null,
-                material: data.material || null,
-                imageURL1: data.imageURLs?.[0] || null,
-                imageURL2: data.imageURLs?.[1] || null,
-                imageURL3: data.imageURLs?.[2] || null,
-                imageURL4: data.imageURLs?.[3] || null,
+                ...productData,
+                imageURL1: imageUrls[0] || null,
+                imageURL2: imageUrls[1] || null,
+                imageURL3: imageUrls[2] || null,
+                imageURL4: imageUrls[3] || null,
             },
         });
 
