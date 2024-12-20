@@ -13,13 +13,6 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'http', // Corrected to 'http'
-        hostname: '192.168.43.226',
-        port: '3000',
-        pathname: '/products/images/**', // Allow specific paths
-        search: '',
-      },
-      {
-        protocol: 'http', // Corrected to 'http'
         hostname: 'great-rift-run-admin.vercel.app',
         port: '',
         pathname: '/products/images/**', // Allow specific paths
