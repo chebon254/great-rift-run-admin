@@ -21,7 +21,7 @@ export async function saveImage(file: Buffer, originalFilename: string): Promise
   fs.writeFileSync(filepath, file);
   
   // Get the base URL from environment variables
-  const baseUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_ADMIN_URL;
   
   // Return the full URL
   return `${baseUrl}/products/images/${filename}`;
