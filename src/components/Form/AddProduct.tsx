@@ -1,37 +1,47 @@
-"use client"
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import Image from 'next/image';
+"use client";
+
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import Image from "next/image";
 
 export default function AddProduct() {
     const [formData, setFormData] = useState({
-        category: 'TSHIRTS',
-        name: '',
-        description: '',
+        category: "TSHIRTS",
+        name: "",
+        description: "",
         inStock: 0,
         price: 0,
-        size: 'S',
-        color: '',
-        material: '',
-        images: [] as File[]
+        size: "",
+        color: "",
+        material: "",
+        images: [] as string[],
     });
-    
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+
+    const handleChange = (
+        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         const { name, value, type } = e.target;
         setFormData((prev) => ({
-          ...prev,
-          [name]: type === 'number' ? Number(value) : value,
+            ...prev,
+            [name]: type === "number" ? parseFloat(value) : value,
         }));
     };
 
-    const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files) {
-            const fileArray = Array.from(files);
-            // Limit to 4 images
-            const limitedFiles = fileArray.slice(0, 4);
+            const remainingSlots = 4 - formData.images.length;
+            if (remainingSlots <= 0) {
+                alert("Maximum 4 images allowed");
+                return;
+            }
+
+            // Convert FileList to Array and process only the allowed number of files
+            const filesArray = Array.from(files).slice(0, remainingSlots);
+            const newImageUrls = filesArray.map(file => URL.createObjectURL(file));
+
             setFormData((prev) => ({
                 ...prev,
-                images: limitedFiles
+                images: [...prev.images, ...newImageUrls],
             }));
         }
     };
@@ -39,285 +49,196 @@ export default function AddProduct() {
     const removeImage = (indexToRemove: number) => {
         setFormData((prev) => ({
             ...prev,
-            images: prev.images.filter((_, index) => index !== indexToRemove)
+            images: prev.images.filter((_, index) => index !== indexToRemove),
         }));
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        // Placeholder for form submission logic
-        console.log(formData);
+        
+        console.log('Sending data:', {
+            ...formData,
+            imageURLs: formData.images,
+        });
+
+        try {
+            const response = await fetch("/api/products", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    imageURLs: formData.images,
+                }),
+            });
+
+            const responseData = await response.json();
+            
+            if (response.ok) {
+                alert("Product added successfully!");
+                setFormData({
+                    category: "TSHIRTS",
+                    name: "",
+                    description: "",
+                    inStock: 0,
+                    price: 0,
+                    size: "",
+                    color: "",
+                    material: "",
+                    images: [],
+                });
+            } else {
+                alert(`Failed to add product: ${JSON.stringify(responseData, null, 2)}`);
+            }
+        } catch (error) {
+            alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     const renderCategorySpecificFields = () => {
-        switch(formData.category) {
-            case 'TSHIRTS':
-            case 'HOODIES':
+        switch (formData.category) {
+            case "TSHIRTS":
+            case "HOODIES":
                 return (
-                    <>
-                        {/* Size Field */}
-                        <div className="sm:col-span-3">
-                            <label htmlFor="size" className="block text-sm font-medium text-gray-900">
-                                Size
-                            </label>
-                            <div className="mt-2 grid grid-cols-1">
-                                <select
-                                    id="size"
-                                    name="size"
-                                    value={formData.size}
-                                    onChange={handleChange}
-                                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                >
-                                    <option>S</option>
-                                    <option>M</option>
-                                    <option>L</option>
-                                    <option>XL</option>
-                                    <option>XXL</option>
-                                </select>
-                                <svg
-                                    className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500"
-                                    viewBox="0 0 16 16"
-                                    fill="currentColor"
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-gray-700">Size</label>
+                            <select
+                                name="size"
+                                value={formData.size}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                            >
+                                <option value="">Select Size</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                            </select>
                         </div>
-
-                        {/* Color Field */}
-                        <div className="sm:col-span-3">
-                            <label htmlFor="color" className="block text-sm font-medium text-gray-900">
-                                Color
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="color"
-                                    id="color"
-                                    value={formData.color}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                />
-                            </div>
+                        <div>
+                            <label className="block text-gray-700">Color</label>
+                            <input
+                                type="text"
+                                name="color"
+                                value={formData.color}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                            />
                         </div>
-
-                        {/* Material Field */}
-                        <div className="sm:col-span-3">
-                            <label htmlFor="material" className="block text-sm font-medium text-gray-900">
-                                Material
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="material"
-                                    id="material"
-                                    value={formData.material}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                />
-                            </div>
+                        <div>
+                            <label className="block text-gray-700">Material</label>
+                            <input
+                                type="text"
+                                name="material"
+                                value={formData.material}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                            />
                         </div>
-                    </>
+                    </div>
                 );
-            case 'WATER':
-            case 'CAPS':
-                return null; // No additional fields for these categories
             default:
                 return null;
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-4 shadow-2xl">
-            <div className="space-y-12">
-                <div className="">
-                    <h2 className="text-base font-semibold text-gray-900">Add New Product</h2>
+        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto bg-white p-6 rounded shadow-md mt-10">
+            <h1 className="text-2xl font-bold mb-6">Add Product</h1>
+            <div className="mb-4">
+                <label className="block text-gray-700">Category</label>
+                <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                >
+                    <option value="TSHIRTS">TSHIRTS</option>
+                    <option value="HOODIES">HOODIES</option>
+                    <option value="CAPS">CAPS</option>
+                    <option value="WATER">WATER</option>
+                </select>
+            </div>
+            <div className="mb-4">
+                <label className="block text-gray-700">Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                />
+            </div>
+            <div className="mb-4">
+                <label className="block text-gray-700">Description</label>
+                <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label className="block text-gray-700">Price</label>
+                    <input
+                        type="number"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                    />
                 </div>
-
-                <div className="border-b border-gray-900/10 pb-12">
-                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        {/* Category */}
-                        <div className="sm:col-span-3">
-                            <label htmlFor="category" className="block text-sm font-medium text-gray-900">
-                                Category
-                            </label>
-                            <div className="mt-2 grid grid-cols-1">
-                                <select
-                                    id="category"
-                                    name="category"
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                >
-                                    <option>TSHIRTS</option>
-                                    <option>HOODIES</option>
-                                    <option>CAPS</option>
-                                    <option>WATER</option>
-                                </select>
-                                <svg
-                                    className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500"
-                                    viewBox="0 0 16 16"
-                                    fill="currentColor"
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            </div>
-                        </div>
-
-                        {/* Name */}
-                        <div className="sm:col-span-3">
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-900">
-                                Name
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="name"
-                                    id="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Description */}
-                        <div className="sm:col-span-6">
-                            <label htmlFor="description" className="block text-sm font-medium text-gray-900">
-                                Description
-                            </label>
-                            <div className="mt-2">
-                                <textarea
-                                    name="description"
-                                    id="description"
-                                    rows={3}
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                />
-                            </div>
-                        </div>
-
-                        {/* In Stock */}
-                        <div className="sm:col-span-3">
-                            <label htmlFor="inStock" className="block text-sm font-medium text-gray-900">
-                                In Stock
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="number"
-                                    name="inStock"
-                                    id="inStock"
-                                    value={formData.inStock}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Price */}
-                        <div className="sm:col-span-3">
-                            <label htmlFor="price" className="block text-sm font-medium text-gray-900">
-                                Price
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="number"
-                                    name="price"
-                                    id="price"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Render category-specific fields */}
-                        {renderCategorySpecificFields()}
-
-                        {/* Image Upload */}
-                        <div className="sm:col-span-6">
-                            <label htmlFor="images" className="block text-sm font-medium text-gray-900">
-                                Product Images (Max 4)
-                            </label>
-                            <div className="mt-2 flex items-center space-x-2">
-                                <input
-                                    type="file"
-                                    id="images"
-                                    name="images"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={handleImageUpload}
-                                    className="block w-full text-sm text-gray-900 file:mr-4 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-indigo-100"
-                                />
-                            </div>
-                            {/* Image Preview */}
-                            {formData.images.length > 0 && (
-                                <div className="mt-4 flex space-x-2">
-                                    {formData.images.map((file, index) => (
-                                        <div key={index} className="relative">
-                                            <Image 
-                                                src={URL.createObjectURL(file)} 
-                                                height={100}
-                                                width={100}
-                                                alt={`Preview ${index + 1}`} 
-                                                className="h-20 w-20 object-cover rounded-md"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeImage(index)}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs"
-                                            >
-                                                X
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                <div>
+                    <label className="block text-gray-700">In Stock</label>
+                    <input
+                        type="number"
+                        name="inStock"
+                        value={formData.inStock}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                    />
                 </div>
             </div>
-
-            {/* Submit/Cancel buttons */}
-            <div className="mt-6 flex items-center justify-end gap-x-6">
-                <button
-                    type="button"
-                    className="text-sm font-semibold text-gray-900"
-                    onClick={() => {
-                        // Reset form or navigate away
-                        setFormData({
-                            category: 'TSHIRTS',
-                            name: '',
-                            description: '',
-                            inStock: 0,
-                            price: 0,
-                            size: 'S',
-                            color: '',
-                            material: '',
-                            images: []
-                        });
-                    }}
-                >
-                    Cancel
-                </button>
-                <button
-                    type="submit"
-                    className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                    Save
-                </button>
+            {renderCategorySpecificFields()}
+            <div className="mb-4">
+                <label className="block text-gray-700">
+                    Upload Images ({formData.images.length}/4)
+                </label>
+                <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                />
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {formData.images.map((url, index) => (
+                        <div key={index} className="relative">
+                            <img
+                                src={url}
+                                alt={`Product image ${index + 1}`}
+                                className="w-full h-32 object-cover rounded"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                            >
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
+            <button
+                type="submit"
+                className="w-full bg-blue-500 text-white py-2 rounded shadow hover:bg-blue-600 focus:outline-none"
+            >
+                Add Product
+            </button>
         </form>
     );
 }
