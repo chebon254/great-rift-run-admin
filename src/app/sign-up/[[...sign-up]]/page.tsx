@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "This is Next.js Login Page NextAdmin Dashboard Kit",
 };
 
+export const dynamic = "force-dynamic";
+
 const SignIn: React.FC = () => {
   return (
     <>
