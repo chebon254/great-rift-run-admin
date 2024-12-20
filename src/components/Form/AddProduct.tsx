@@ -217,8 +217,10 @@ export default function AddProduct() {
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                     {formData.images.map((url, index) => (
                         <div key={index} className="relative">
-                            <img
+                            <Image
                                 src={url}
+                                height={160}
+                                width={160}
                                 alt={`Product image ${index + 1}`}
                                 className="w-full h-32 object-cover rounded"
                             />
