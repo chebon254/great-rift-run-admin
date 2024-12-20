@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
         search: '',
       },
       {
-        protocol: 'http', // Corrected to 'http'
+        protocol: 'https', // Corrected to 'http'
         hostname: 'great-rift-run-admin.vercel.app',
         port: '',
         pathname: '/products/images/**', // Allow specific paths
