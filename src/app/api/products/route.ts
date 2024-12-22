@@ -15,7 +15,6 @@ export async function POST(request: Request) {
             description: formData.get('description') as string,
             price: parseFloat(formData.get('price') as string),
             inStock: parseInt(formData.get('inStock') as string),
-            size: formData.get('size') as string,
             color: formData.get('color') as string,
             material: formData.get('material') as string,
         };

@@ -3,14 +3,13 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Image from "next/image";
 
-// Define the form state interface
+// Updated interface without size
 interface ProductFormData {
     category: string;
     name: string;
     description: string;
     inStock: number;
     price: number;
-    size: string;
     color: string;
     material: string;
     images: string[];
@@ -24,7 +23,6 @@ export default function AddProduct() {
         description: "",
         inStock: 0,
         price: 0,
-        size: "",
         color: "",
         material: "",
         images: [],
@@ -102,7 +100,6 @@ export default function AddProduct() {
                     description: "",
                     inStock: 0,
                     price: 0,
-                    size: "",
                     color: "",
                     material: "",
                     images: [],
@@ -122,21 +119,6 @@ export default function AddProduct() {
             case "HOODIES":
                 return (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-gray-700">Size</label>
-                            <select
-                                name="size"
-                                value={formData.size}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring"
-                            >
-                                <option value="">Select Size</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-                        </div>
                         <div>
                             <label className="block text-gray-700">Color</label>
                             <input
