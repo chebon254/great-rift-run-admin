@@ -1,6 +1,6 @@
-'use client';
-
-import { useState } from "react";
+// src/app/Orders/Order-Detail/[id]/OrderDetails.tsx
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { OrderProgress, PaymentStatus } from "@prisma/client";
@@ -37,12 +37,28 @@ interface OrderDetail {
   }[];
 }
 
-export default function OrderDetailsClient({ initialOrder }: { initialOrder: OrderDetail }) {
-  const [order, setOrder] = useState<OrderDetail>(initialOrder);
+const OrderDetails = ({ id }: { id: string }) => {
+  const [order, setOrder] = useState<OrderDetail | null>(null);
+
+  useEffect(() => {
+    if (id) {
+      fetchOrderDetails();
+    }
+  }, [id]);
+
+  const fetchOrderDetails = async () => {
+    try {
+      const response = await fetch(`/api/orders/${id}`);
+      const data = await response.json();
+      setOrder(data);
+    } catch (error) {
+      console.error("Error fetching order details:", error);
+    }
+  };
 
   const updateOrderStatus = async (status: OrderProgress) => {
     try {
-      const response = await fetch(`/api/orders/${order.id}`, {
+      const response = await fetch(`/api/orders/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -50,13 +66,14 @@ export default function OrderDetailsClient({ initialOrder }: { initialOrder: Ord
         body: JSON.stringify({ status }),
       });
       if (response.ok) {
-        const updatedOrder = await response.json();
-        setOrder(updatedOrder);
+        fetchOrderDetails();
       }
     } catch (error) {
       console.error("Error updating order status:", error);
     }
   };
+
+  if (!order) return <div>Loading...</div>;
 
   return (
     <>
@@ -116,6 +133,7 @@ export default function OrderDetailsClient({ initialOrder }: { initialOrder: Ord
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Order Info */}
           <div className="border rounded-lg p-4">
             <h2 className="font-semibold mb-4">Order Info</h2>
             <p className="my-2">
@@ -137,6 +155,7 @@ export default function OrderDetailsClient({ initialOrder }: { initialOrder: Ord
             </p>
           </div>
 
+          {/* Customer Info */}
           <div className="border rounded-lg p-4">
             <h2 className="font-semibold mb-4">Customer</h2>
             <p className="my-2">
@@ -151,6 +170,7 @@ export default function OrderDetailsClient({ initialOrder }: { initialOrder: Ord
             </p>
           </div>
 
+          {/* Shipping Address */}
           <div className="border rounded-lg p-4">
             <h2 className="font-semibold mb-2">Shipping Address</h2>
             <p className="my-2">
@@ -170,6 +190,7 @@ export default function OrderDetailsClient({ initialOrder }: { initialOrder: Ord
           </div>
         </div>
 
+        {/* Order Items */}
         <div className="space-y-4 mb-6">
           {order.items.map((item) => (
             <div
@@ -191,6 +212,7 @@ export default function OrderDetailsClient({ initialOrder }: { initialOrder: Ord
           ))}
         </div>
 
+        {/* Order Summary */}
         <div className="text-right">
           <p className="mb-1">
             <strong>Subtotal:</strong> Ksh{order.subtotal.toLocaleString()}
@@ -214,5 +236,6 @@ export default function OrderDetailsClient({ initialOrder }: { initialOrder: Ord
       </div>
     </>
   );
-}
+};
 
+export default OrderDetails;
