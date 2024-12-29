@@ -1,11 +1,21 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `Product` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `category` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NOT NULL,
+    `price` DOUBLE NOT NULL,
+    `inStock` INTEGER NOT NULL,
+    `color` VARCHAR(191) NULL,
+    `material` VARCHAR(191) NULL,
+    `imageURL1` VARCHAR(191) NULL,
+    `imageURL2` VARCHAR(191) NULL,
+    `imageURL3` VARCHAR(191) NULL,
+    `imageURL4` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-  - You are about to drop the column `size` on the `Product` table. All the data in the column will be lost.
-
-*/
--- AlterTable
-ALTER TABLE `Product` DROP COLUMN `size`;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Address` (
@@ -71,6 +81,18 @@ CREATE TABLE `Payment` (
     UNIQUE INDEX `Payment_orderId_key`(`orderId`),
     UNIQUE INDEX `Payment_transactionId_key`(`transactionId`),
     UNIQUE INDEX `Payment_merchantRef_key`(`merchantRef`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Blog` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(191) NOT NULL,
+    `content` LONGTEXT NOT NULL,
+    `thumbnail` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

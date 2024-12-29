@@ -16,7 +16,7 @@ export default function Navbar({ className }: NavbarProps) {
     { name: "DASHBOARD", href: "/" },
     { name: "PRODUCTS", href: "/Products" },
     { name: "ORDERS", href: "/Orders" },
-    { name: "BLOGS", href: "/Orders" },
+    { name: "BLOGS", href: "/blogs" },
     { name: "CONTACTS", href: "/Orders" },
   ];
 
