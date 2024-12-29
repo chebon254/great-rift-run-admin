@@ -10,7 +10,7 @@ export async function GET() {
       }
     });
     return NextResponse.json(blogs);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch blogs' }, { status: 500 });
   }
 }
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(blog);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to create blog' }, { status: 500 });
   }
 }

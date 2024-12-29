@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
+import Image from 'next/image';
 
 interface Blog {
   id: number;
@@ -52,7 +53,7 @@ export default function BlogsPage() {
         {blogs.map((blog) => (
           <Card key={blog.id}>
             <CardHeader className="relative">
-              <img
+              <Image
                 src={blog.thumbnail}
                 alt={blog.title}
                 className="w-full h-48 object-cover rounded-t-lg"

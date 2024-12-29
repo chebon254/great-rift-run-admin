@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ImagePlus } from 'lucide-react';
+import Image from 'next/image';
 
 export default function NewBlogPage() {
   const router = useRouter();
@@ -87,7 +88,7 @@ export default function NewBlogPage() {
               <div className="border-2 border-dashed rounded-lg p-4">
                 {preview ? (
                   <div className="relative">
-                    <img
+                    <Image
                       src={preview}
                       alt="Preview"
                       className="w-full h-48 object-cover rounded-lg"

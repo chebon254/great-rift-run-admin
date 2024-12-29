@@ -1,6 +1,6 @@
 // src/app/Orders/Order-Detail/[id]/OrderDetails.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { OrderProgress, PaymentStatus } from "@prisma/client";
@@ -40,13 +40,8 @@ interface OrderDetail {
 const OrderDetails = ({ id }: { id: string }) => {
   const [order, setOrder] = useState<OrderDetail | null>(null);
 
-  useEffect(() => {
-    if (id) {
-      fetchOrderDetails();
-    }
-  }, [id]);
-
-  const fetchOrderDetails = async () => {
+  // Memoize fetchOrderDetails to avoid re-creating it on each render
+  const fetchOrderDetails = useCallback(async () => {
     try {
       const response = await fetch(`/api/orders/${id}`);
       const data = await response.json();
@@ -54,7 +49,13 @@ const OrderDetails = ({ id }: { id: string }) => {
     } catch (error) {
       console.error("Error fetching order details:", error);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchOrderDetails();
+    }
+  }, [id, fetchOrderDetails]); 
 
   const updateOrderStatus = async (status: OrderProgress) => {
     try {

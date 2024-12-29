@@ -27,7 +27,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
 
     return NextResponse.json(order);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch order details' }, { status: 500 });
   }
 }
@@ -48,7 +48,7 @@ export async function PATCH(
     });
 
     return NextResponse.json(order);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to update order status' }, { status: 500 });
   }
 }
