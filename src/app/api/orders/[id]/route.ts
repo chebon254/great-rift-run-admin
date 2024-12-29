@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../../lib/prisma';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const order = await prisma.order.findUnique({
       where: {
-        id: parseInt(params.id),
+        id: parseInt((await params).id),
       },
       include: {
         address: true,
@@ -34,13 +34,13 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
     const order = await prisma.order.update({
       where: {
-        id: parseInt(params.id),
+        id: parseInt((await params).id),
       },
       data: {
         orderProgress: body.status,
