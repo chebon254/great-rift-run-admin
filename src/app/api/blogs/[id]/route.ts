@@ -22,11 +22,11 @@ export async function GET(
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     await prisma.blog.delete({
       where: {
-        id: parseInt(params.id), // Parse the ID to integer
+        id: parseInt((await params).id), // Parse the ID to integer
       },
     });
 
