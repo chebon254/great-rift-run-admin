@@ -16,6 +16,8 @@ export default function Navbar({ className }: NavbarProps) {
     { name: "DASHBOARD", href: "/" },
     { name: "PRODUCTS", href: "/Products" },
     { name: "ORDERS", href: "/Orders" },
+    { name: "BLOGS", href: "/Orders" },
+    { name: "CONTACTS", href: "/Orders" },
   ];
 
   return (
@@ -53,7 +55,7 @@ export default function Navbar({ className }: NavbarProps) {
               </div>
               <div>
                 <SignedIn>
-                  <UserButton showName />
+                  <UserButton />
                 </SignedIn>
               </div>
             </div>
@@ -112,7 +114,7 @@ export default function Navbar({ className }: NavbarProps) {
                       </Link>
                     ))}
                     <SignedIn>
-                      <UserButton showName />
+                      <UserButton />
                     </SignedIn>
                   </div>
                 </div>
