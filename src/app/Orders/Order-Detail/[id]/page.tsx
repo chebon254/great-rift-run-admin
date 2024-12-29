@@ -1,7 +1,13 @@
-import OrderDetails from './OrderDetails';
+import OrderDetails from "./OrderDetails";
 
-export default async function OrderDetailsPage({ params }: { params: { id: string } }) {
+type paramsType = Promise<{ id: string }>;
+
+export default async function OrderDetailsPage({
+    params,
+  }: {
+    params: paramsType;
+  }) {
   // Ensure params are resolved asynchronously
-  const { id } = params;
+  const { id } = await params;
   return <OrderDetails id={id} />;
 }
