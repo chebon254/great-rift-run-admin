@@ -28,7 +28,7 @@ export default function Navbar({ className }: NavbarProps) {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image
-                src="/site-ui-assets/placeholder.png"
+                src="/site-ui-assets/placeholder.svg"
                 alt="Great Rift Run"
                 width={150}
                 height={50}
