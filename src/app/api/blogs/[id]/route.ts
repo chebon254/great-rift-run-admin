@@ -1,16 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../../lib/prisma';
 
-export async function GET(
-  req: Request,
-  context: { params: { id: string } }
-) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = context.params; // Extract `id` from `context.params`
-    
     const blog = await prisma.blog.findUnique({
       where: {
-        id: parseInt(id), // Use the `id` from the params
+        id: parseInt(params.id), // Parse the ID to integer
       },
     });
 
@@ -24,16 +19,11 @@ export async function GET(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  context: { params: { id: string } }
-) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = context.params; // Extract `id` from `context.params`
-
     await prisma.blog.delete({
       where: {
-        id: parseInt(id), // Use the `id` from the params
+        id: parseInt(params.id), // Parse the ID to integer
       },
     });
 
