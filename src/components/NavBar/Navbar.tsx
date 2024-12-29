@@ -17,7 +17,7 @@ export default function Navbar({ className }: NavbarProps) {
     { name: "PRODUCTS", href: "/Products" },
     { name: "ORDERS", href: "/Orders" },
     { name: "BLOGS", href: "/blogs" },
-    { name: "CONTACTS", href: "/Orders" },
+    { name: "CONTACTS", href: "/contacts" },
   ];
 
   return (

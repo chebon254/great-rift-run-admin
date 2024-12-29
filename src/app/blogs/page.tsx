@@ -56,6 +56,8 @@ export default function BlogsPage() {
               <Image
                 src={blog.thumbnail}
                 alt={blog.title}
+                height={192}
+                width={250}
                 className="w-full h-48 object-cover rounded-t-lg"
               />
               <Button
