@@ -3,12 +3,14 @@ import prisma from '../../../../../lib/prisma';
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
+    const { id } = context.params; // Extract `id` from `context.params`
+    
     const blog = await prisma.blog.findUnique({
       where: {
-        id: parseInt(params.id),
+        id: parseInt(id), // Use the `id` from the params
       },
     });
 
@@ -17,20 +19,21 @@ export async function GET(
     }
 
     return NextResponse.json(blog);
-  } catch{
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch blog' }, { status: 500 });
   }
 }
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
+    const { id } = context.params; // Extract `id` from `context.params`
 
     await prisma.blog.delete({
       where: {
-        id: parseInt(params.id),
+        id: parseInt(id), // Use the `id` from the params
       },
     });
 
