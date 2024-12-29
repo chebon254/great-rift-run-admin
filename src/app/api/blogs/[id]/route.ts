@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../../lib/prisma';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  req: Request, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id: parseInt(params.id), // Parse the ID to integer
+        id: parseInt((await params).id), // Parse the ID to integer
       },
     });
 
