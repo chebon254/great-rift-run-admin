@@ -5,6 +5,18 @@ import { Product } from "../../../types/product";
 import AddProduct from "@/components/Form/AddProduct";
 import Skeleton from "./Skeleton";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -47,6 +59,33 @@ export default function Products() {
 
   // Categories array for dynamic rendering
   const categories = ["ALL", "TSHIRTS", "HOODIES", "CAPS", "WATER"];
+
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/products/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete product');
+      }
+
+      // Remove product from state
+      const updatedProducts = products.filter(product => product.id !== id);
+      setProducts(updatedProducts);
+      setFilteredProducts(
+        selectedCategory === "ALL"
+          ? updatedProducts
+          : updatedProducts.filter(p => p.category === selectedCategory)
+      );
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert(error instanceof Error ? error.message : 'Failed to delete product');
+    }
+  };
+
 
   return (
     <>
@@ -105,6 +144,9 @@ export default function Products() {
           <div className="col-span-2 flex items-center">
             <p className="font-medium">Stock</p>
           </div>
+          <div className="col-span-1 flex items-center">
+            <p className="font-medium">Action</p>
+          </div>
         </div>
 
         {isLoading ? (
@@ -148,6 +190,32 @@ export default function Products() {
                   {product.inStock}
                 </p>
               </div>
+              <div className="col-span-1 flex items-center">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button className="text-red-500 hover:text-red-700">
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Product</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete "{product.name}"? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleDelete(product.id)}
+                      className="bg-red-500 hover:bg-red-600"
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
             </div>
           ))
         )}

@@ -29,6 +29,7 @@ model Product {
     imageURL3   String?
     imageURL4   String?
     createdAt   DateTime @default(now())
+    deletedAt   DateTime? // Add this field for soft delete
     OrderItem   OrderItem[]
 }
 
