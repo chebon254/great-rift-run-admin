@@ -1,19 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
-import { saveBlogImage } from '../../../../utils/blogUpload';
-
-export async function GET() {
-  try {
-    const blogs = await prisma.blog.findMany({
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
-    return NextResponse.json(blogs);
-  } catch {
-    return NextResponse.json({ error: 'Failed to fetch blogs' }, { status: 500 });
-  }
-}
+import { uploadImage } from '../../../../utils/imageUpload';
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     const buffer = Buffer.from(await thumbnailFile.arrayBuffer());
-    const thumbnailUrl = await saveBlogImage(buffer, thumbnailFile.name);
+    const thumbnailUrl = await uploadImage(buffer, thumbnailFile.name, 'blogs');
 
     const blog = await prisma.blog.create({
       data: {
@@ -38,7 +25,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(blog);
-  } catch {
+  } catch (error) {
     return NextResponse.json({ error: 'Failed to create blog' }, { status: 500 });
   }
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { Product } from "../../../types/product";
 import AddProduct from "@/components/Form/AddProduct";
 import Skeleton from "./Skeleton";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -120,7 +120,7 @@ export default function Products() {
               <div className="col-span-3 flex items-center">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="h-12.5 w-15 rounded-md">
-                    <Image
+                    <ImageWithFallback
                       src={product.imageURL1 || "/products/product_placeholder.png"}
                       width={60}
                       height={50}
