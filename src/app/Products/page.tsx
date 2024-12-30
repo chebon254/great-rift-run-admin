@@ -191,7 +191,7 @@ export default function Products() {
                 </p>
               </div>
               <div className="col-span-1 flex items-center">
-              <AlertDialog>
+              <AlertDialog >
                 <AlertDialogTrigger asChild>
                   <button className="text-red-500 hover:text-red-700">
                     <Trash2 className="h-5 w-5" />
@@ -201,7 +201,7 @@ export default function Products() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete Product</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Are you sure you want to delete "{product.name}"? This action cannot be undone.
+                      Are you sure you want to delete &quot;{product.name}&quot;? This action cannot be undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

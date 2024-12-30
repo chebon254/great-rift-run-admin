@@ -22,7 +22,7 @@ export async function DELETE(
         deletedAt: new Date()
       }
     });
-
+    console.log(updatedProduct);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete product:", error);
