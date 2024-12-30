@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Product } from "../../../types/product";
 import AddProduct from "@/components/Form/AddProduct";
+import Skeleton from "./Skeleton";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -107,7 +108,7 @@ export default function Products() {
         </div>
 
         {isLoading ? (
-          <div className="text-center py-8">Loading products...</div>
+          <Skeleton/>
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-8">No products found</div>
         ) : (
