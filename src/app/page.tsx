@@ -54,7 +54,7 @@ const Dashboard = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [, setBlogs] = useState<Blog[]>([]);
   const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

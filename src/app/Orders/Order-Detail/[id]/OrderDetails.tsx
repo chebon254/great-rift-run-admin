@@ -151,110 +151,117 @@ const OrderDetails = ({ id }: { id: string }) => {
       </div>
 
       {/* Order Details */}
-      <div className="w-full p-6 rounded-2xl bg-white">
-        <div className="flex items-center justify-between">
-          <div className="p-0">
-            <h1 className="text-2xl font-bold mb-4">Order Details</h1>
-            <p className="mb-2">Order #{order.orderNumber}</p>
-            <p className="mb-6">Status: {order.orderProgress}</p>
-          </div>
+      {loading && !order ? (
+        <OrderSkeleton />
+      ) : (
+        <div className="w-full p-6 rounded-2xl bg-white">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold mr-4">Change Order Status:</h3>
-            <CustomDropdown
-              value={order.orderProgress}
-              options={Object.values(OrderProgress)}
-              onChange={(newStatus) => updateOrderStatus(newStatus)}
-              statusUpdating={statusUpdating}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {/* Order Info */}
-          <div className="border rounded-lg p-4">
-            <h2 className="font-semibold mb-4">Order Info</h2>
-            <p className="my-2">
-              <strong>Order Date:</strong>{" "}
-              {new Date(order.createdAt).toLocaleDateString()}
-            </p>
-            <p className="my-2">
-              <strong>Last Updated:</strong>{" "}
-              {new Date(order.updatedAt).toLocaleDateString()}
-            </p>
-            <p className="my-2">
-              <strong>Status:</strong> {order.orderProgress}
-            </p>
-            <p className="my-2">
-              <strong>Payment Status:</strong> {order.paymentStatus}
-            </p>
-            <p className="my-2">
-              <strong>Payment Method:</strong> {order.paymentMethod}
-            </p>
-          </div>
-
-          {/* Customer Info */}
-          <div className="border rounded-lg p-4">
-            <h2 className="font-semibold mb-4">Customer</h2>
-            <p className="my-2">
-              <strong>Name:</strong>{" "}
-              {`${order.address.firstName} ${order.address.lastName}`}
-            </p>
-            <p className="my-2">
-              <strong>Email:</strong> {order.address.email}
-            </p>
-            <p className="my-2">
-              <strong>Phone:</strong> {order.address.phone}
-            </p>
-          </div>
-
-          {/* Shipping Address */}
-          <div className="border rounded-lg p-4">
-            <h2 className="font-semibold mb-2">Shipping Address</h2>
-            <p className="my-2">
-              <strong>City:</strong> {order.address.city}
-            </p>
-            <p className="my-2">
-              <strong>Street:</strong> {order.address.street}
-            </p>
-            <p className="my-2">
-              <strong>House:</strong> {order.address.house}
-            </p>
-            {order.address.additionalInfo && (
-              <p className="my-2">
-                <strong>Additional Info:</strong> {order.address.additionalInfo}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Order Items */}
-        <div className="space-y-4 mb-6">
-          {order.items.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between border rounded-lg p-4"
-            >
-              <Image
-                src={item.product.imageURL1 || "/product/product-02.webp"}
-                alt={item.product.name}
-                width={80}
-                height={80}
-              />
-              <div className="flex-1 ml-4">
-                <h4 className="font-semibold">{item.product.name}</h4>
-                <p>Quantity: {item.quantity}</p>
-              </div>
-              <p className="font-semibold">Ksh{item.price.toLocaleString()}</p>
+            <div className="p-0">
+              <h1 className="text-2xl font-bold mb-4">Order Details</h1>
+              <p className="mb-2">Order #{order.orderNumber}</p>
+              <p className="mb-6">Status: {order.orderProgress}</p>
             </div>
-          ))}
-        </div>
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold mr-4">Change Order Status:</h3>
+              <CustomDropdown
+                value={order.orderProgress}
+                options={Object.values(OrderProgress)}
+                onChange={(newStatus) => updateOrderStatus(newStatus)}
+                statusUpdating={statusUpdating}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {/* Order Info */}
+            <div className="border rounded-lg p-4">
+              <h2 className="font-semibold mb-4">Order Info</h2>
+              <p className="my-2">
+                <strong>Order Date:</strong>{" "}
+                {new Date(order.createdAt).toLocaleDateString()}
+              </p>
+              <p className="my-2">
+                <strong>Last Updated:</strong>{" "}
+                {new Date(order.updatedAt).toLocaleDateString()}
+              </p>
+              <p className="my-2">
+                <strong>Status:</strong> {order.orderProgress}
+              </p>
+              <p className="my-2">
+                <strong>Payment Status:</strong> {order.paymentStatus}
+              </p>
+              <p className="my-2">
+                <strong>Payment Method:</strong> {order.paymentMethod}
+              </p>
+            </div>
 
-        {/* Order Summary */}
-        <div className="text-right">
-          <h3 className="text-xl font-bold mt-4">
-            Total: Ksh{order.totalAmount.toLocaleString()}
-          </h3>
+            {/* Customer Info */}
+            <div className="border rounded-lg p-4">
+              <h2 className="font-semibold mb-4">Customer</h2>
+              <p className="my-2">
+                <strong>Name:</strong>{" "}
+                {`${order.address.firstName} ${order.address.lastName}`}
+              </p>
+              <p className="my-2">
+                <strong>Email:</strong> {order.address.email}
+              </p>
+              <p className="my-2">
+                <strong>Phone:</strong> {order.address.phone}
+              </p>
+            </div>
+
+            {/* Shipping Address */}
+            <div className="border rounded-lg p-4">
+              <h2 className="font-semibold mb-2">Shipping Address</h2>
+              <p className="my-2">
+                <strong>City:</strong> {order.address.city}
+              </p>
+              <p className="my-2">
+                <strong>Street:</strong> {order.address.street}
+              </p>
+              <p className="my-2">
+                <strong>House:</strong> {order.address.house}
+              </p>
+              {order.address.additionalInfo && (
+                <p className="my-2">
+                  <strong>Additional Info:</strong>{" "}
+                  {order.address.additionalInfo}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Order Items */}
+          <div className="space-y-4 mb-6">
+            {order.items.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between border rounded-lg p-4"
+              >
+                <Image
+                  src={item.product.imageURL1 || "/product/product-02.webp"}
+                  alt={item.product.name}
+                  width={80}
+                  height={80}
+                />
+                <div className="flex-1 ml-4">
+                  <h4 className="font-semibold">{item.product.name}</h4>
+                  <p>Quantity: {item.quantity}</p>
+                </div>
+                <p className="font-semibold">
+                  Ksh{item.price.toLocaleString()}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Order Summary */}
+          <div className="text-right">
+            <h3 className="text-xl font-bold mt-4">
+              Total: Ksh{order.totalAmount.toLocaleString()}
+            </h3>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
