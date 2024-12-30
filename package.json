@@ -15,11 +15,13 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@shadcn/ui": "^0.0.4",
     "class-variance-authority": "^0.7.1",
+    "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.469.0",
     "next": "^15.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "recharts": "^2.15.0",
     "slugify": "^1.6.6",
     "tailwind-merge": "^2.6.0",
     "uuid": "^11.0.3"
