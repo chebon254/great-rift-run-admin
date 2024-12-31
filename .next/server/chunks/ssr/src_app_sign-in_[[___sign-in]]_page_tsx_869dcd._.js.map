@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///home/kibet/Dev/great-rift-run-admin/src/app/sign-in/%5B%5B...sign-in%5D%5D/page.tsx"],"sourcesContent":["import { SignIn } from \"@clerk/nextjs\";\n\nexport const dynamic = \"force-dynamic\";\n\nexport default function Page() {\n  return (\n    <>\n      <div className=\"h-screen bg-[#eeeeee] w-full flex items-center justify-center\">\n        <SignIn />\n      </div>\n    </>\n  );\n}\n"],"names":[],"mappings":";;;;;AAAA;;;AAEO,MAAM,UAAU;AAER,SAAS;IACtB,qBACE;kBACE,cAAA,8OAAC;YAAI,WAAU;sBACb,cAAA,8OAAC,sLAAA,CAAA,SAAM;;;;;;;;;;;AAIf"}},
+    {"offset": {"line": 32, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
+}
